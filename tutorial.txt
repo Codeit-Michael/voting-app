@@ -106,3 +106,100 @@ without making migrations or touching the database.
 you develop your project, without the need to delete your database or tables
 and make new ones - it specializes in upgrading your database live, without
 losing data.
+
+4. Writing and Saving in Database
+4.1. Open iPython for manage.py via: python3 manage.py shell.
+
+4.2. Import your models: from main.models import ToDoList,Items.
+
+4.3. Adding data in database is just easy. Lets try adding some data: 
+t = ToDoList(name="Michael's Studies"). To save it, simply add: t.save().
+
+4.4. ToDoList.objects.all(): To see all your object, run.
+
+4.5. ToDoList.objects.get(id={object id}): To get a specific data using id.
+
+4.6. ToDoList.objects.get(name='{word}'): to search via name.
+
+4.7. To show its items from relative class:
+format: t.{relative class name}_set.all()
+ex: t.items_set.all()
+
+4.8. To add items in todolist at t, you must use t.items_set.create(follow the
+patterns(give what the instances onto they need)).
+Ex: t.items_set.create(text='Finish django',complete=False)
+
+4.9. If you already exit the iPython and you want to access the db inside it,
+just import again what we import before to access this db.
+
+5. User Interface (UI)
+5.1. The 'URLConf' maps the 'urlpatterns' to views(templates)
+
+5.2. Raising 404- if you enter something that can't be found, the Http404 will
+raise automatically. If you want to still type it, just append ff in your
+function were you need it:
+--from django.http import Http404
+-and when you want to use it, specially on if/try statements, just:
+--raise Http404("message")
+
+5.3. Removing hardcoded URLs in templates
+-Instead of doing this tightly-coupled URLs;
+<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+
+-Python allows us to do this:
+<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+
+-As you notice, we use 'detail' instead of URL. It is possible since we
+claim it in our urls.py when we add name for detail() and detail.html:
+
+# the 'name' value as called by the {% url %} template tag
+path('<int:question_id>/', views.detail, name='detail'),
+
+-We already declaire its link in urls.py. The a tag head to urls.py because we
+put 'url' inside the value of a tag's href so call the detail() by its name.
+
+-If you want to change the URL of the polls detail view to something else,
+perhaps to something like polls/specifics/12/ instead of doing it in the
+template (or templates) you would change it in polls/urls.py:
+...
+# added the word 'specifics'
+path('specifics/<int:question_id>/', views.detail, name='detail'),
+...
+
+5.4. Namespacing URL names and Why?
+- We namespace URL names(paths urlpatterns) incase we had the same function
+name in other app installed so the will not be confused on what function/URL
+to access.
+Before:
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('<int:question_id>/', views.detail, name='detail'),
+    path('<int:question_id>/results/', views.results, name='results'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+After:
+from django.urls import path
+from . import views
+
+app_name = 'polls'  # ADDED LINE
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('<int:question_id>/', views.detail, name='detail'),
+    path('<int:question_id>/results/', views.results, name='results'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+-Now change your polls/index.html template from:
+polls/templates/polls/index.html
+
+Before:
+<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+
+to point at the namespaced detail view:
+After:
+<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+
