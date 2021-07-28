@@ -1,17 +1,17 @@
 ## Part 1: Installing
-1. Making a project- choose a dir then type "django-admin startproject
+1.1. Making a project- choose a dir then type "django-admin startproject
 {project name.let's use (mysite)}"
 
-2. Making an app- python3 manage.py startapp {name. lets use (polls)}.
+1.2. Making an app- python3 manage.py startapp {name. lets use (polls)}.
 
 adittional: (Making a simple message 'hello world')
-1. Go to polls/views.py and type:
+1.3. Go to polls/views.py and type:
 from django.http import HttpResponse
 
 def func1(request):
     return HttpResponse('hello world')
 
-2. Make a file urls.py at polls and type:
+1.4. Make a file urls.py at polls and type:
 from django.urls import path
 from . import views
 
@@ -19,34 +19,34 @@ urlpatterns = [
     path('helloworld/',views.func1)
 ]
 
-3. In mysite/urls.py, follow the ff. for URLConf/URL Configuration
+1.5. In mysite/urls.py, follow the ff. for URLConf/URL Configuration
 
 ## Part 2: Database setting up, creating first model, and a quick intro to
 Django’s automatically-generated admin site
-1. Database Setup
+2.1. Database Setup
 - Head to the mysite/settings.py and as you notice it is full of module-level
 stuffs. 
 
-1.1 Database dictionary- Django has installed database already which is SQLite.
+2.1.1. Database dictionary- Django has installed database already which is SQLite.
 But you can change your db if you want, other db like mySQL, oracle, etc.
 As if you notice the DATABASE dict, it contains 2 items:
 * ENGINE (depends what backend and db you are using)
 * NAME (contains full path (including filename). The default val contains 
 BASE_DIR / 'db.sqlite3' will store that file in project dir)
 
-1.2 Set the TIME_ZONE on your timezone
+2.1.2. Set the TIME_ZONE on your timezone
 
-1.3 INSTALLED_APPS- it has all the app names. It has default apps which is
+2.1.3. INSTALLED_APPS- it has all the app names. It has default apps which is
 listed because of the common cases.
 
-1.4 Migrating- to migrate, type 'python3 manage.py migrate'. It creates a 
+2.1.4. Migrating- to migrate, type 'python3 manage.py migrate'. It creates a 
 necessary db tables based on apps present at INSTALLED_APPS and writes
 them in your backend/db.
 
-2. Creating Models
+2.2. Creating Models
 Model.py- contains fields(models) and characteristics of your data stored
 
-2.1 Fields(classes)- represented  by every instance inside.
+2.2.1 Fields(classes)- represented  by every instance inside.
 - in our example like the Question field, we have instances;
 *question_text- contains models.CharField(maxlength=200), is for character fields
 *pub_date- contains models.DateTimeField('date published'), is for datetimes
@@ -56,8 +56,8 @@ between two fields/classes. Thats why it contains Question class as its
 parameter. Its 2nd parameter is 'on_delete = models.CASCADE' means if we 
 delete item/s in Question, we also delete its data in Choices
 
-3. Activating Models
-3.1 Django apps can be use in different django projects just make sure they
+2.3. Activating Models
+2.3.1. Django apps can be use in different django projects just make sure they
 are listed on INSTALLED_APPS at inner django project folder/settings.py.
 Just type the dir of apps upto class inside the apps.py.
 Format: {dj dir}.apps.{class name} EX: polls.apps.PollsConfig
@@ -66,10 +66,10 @@ Format: {dj dir}.apps.{class name} EX: polls.apps.PollsConfig
 declare to django that you make some changes on your models (also your database
 schema) and you want to save the changes on disk(through migration).
 
-3.2 polls/migrations/0001_initial.py saves the migrations that happened.
+2.3.2. polls/migrations/0001_initial.py saves the migrations that happened.
 They are editable, incase you want to modify something
 
-3.3 command "python3 manage.py sqlmigration polls 0001": takes migration
+2.3.3. command "python3 manage.py sqlmigration polls 0001": takes migration
 names and returns their SQL
 
 Note the following:
@@ -93,11 +93,11 @@ it prints it to the screen so that you can see what SQL Django
 thinks is required. It’s useful for checking what Django is going to do or
 if you have database administrators who require SQL scripts for changes.
 
-3.4 python manage.py check; this checks for any problems in your project
+2.3.4. python manage.py check; this checks for any problems in your project
 without making migrations or touching the database.
 
 
-3.5 3 steps in making model changes
+2.3.5. 3 steps in making model changes
 - Change your models (in models.py).
 - 'python manage.py makemigrations' to create migrations for those changes
 - 'python manage.py migrate' to apply those changes to the database.
@@ -107,42 +107,54 @@ you develop your project, without the need to delete your database or tables
 and make new ones - it specializes in upgrading your database live, without
 losing data.
 
-4. Writing and Saving in Database
-4.1. Open iPython for manage.py via: python3 manage.py shell.
+2.4. Writing and Saving in Database
+2.4.1. Open iPython for manage.py via: python3 manage.py shell.
 
-4.2. Import your models: from main.models import ToDoList,Items.
+2.4.2. Import your models: from main.models import ToDoList,Items.
 
-4.3. Adding data in database is just easy. Lets try adding some data: 
+2.4.3. Adding data in database is just easy. Lets try adding some data: 
 t = ToDoList(name="Michael's Studies"). To save it, simply add: t.save().
 
-4.4. ToDoList.objects.all(): To see all your object, run.
+2.4.4. ToDoList.objects.all(): To see all your object, run.
 
-4.5. ToDoList.objects.get(id={object id}): To get a specific data using id.
+2.4.5. ToDoList.objects.get(id={object id}): To get a specific data using id.
 
-4.6. ToDoList.objects.get(name='{word}'): to search via name.
+2.4.6. ToDoList.objects.get(name='{word}'): to search via name.
 
-4.7. To show its items from relative class:
+2.4.7. To show its items from relative class:
 format: t.{relative class name}_set.all()
 ex: t.items_set.all()
 
-4.8. To add items in todolist at t, you must use t.items_set.create(follow the
+2.4.8. To add items in todolist at t, you must use t.items_set.create(follow the
 patterns(give what the instances onto they need)).
 Ex: t.items_set.create(text='Finish django',complete=False)
 
-4.9. If you already exit the iPython and you want to access the db inside it,
+2.4.9. If you already exit the iPython and you want to access the db inside it,
 just import again what we import before to access this db.
 
-5. User Interface (UI)
-5.1. The 'URLConf' maps the 'urlpatterns' to views(templates)
+## Part 3: User Interface (UI)
+3.1. The 'URLConf' maps the 'urlpatterns' to views(templates)
 
-5.2. Raising 404- if you enter something that can't be found, the Http404 will
+3.2. Raising 404- if you enter something that can't be found, the Http404 will
 raise automatically. If you want to still type it, just append ff in your
 function were you need it:
 --from django.http import Http404
 -and when you want to use it, specially on if/try statements, just:
 --raise Http404("message")
 
-5.3. Removing hardcoded URLs in templates
+-But you can simply write:
+question = get_object_or_404(Question, pk=question_id)
+
+-Instead of writing ehole try statement:
+try:
+    myquestion = question.objects.get(pk=question_id)
+except question.DoesNotExist:
+    raise Http404("Question does not exist")
+
+-Just import:
+from django.shortcuts import get_object_or_404, render
+
+3.3. Removing hardcoded URLs in templates
 -Instead of doing this tightly-coupled URLs;
 <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
 
@@ -166,7 +178,7 @@ template (or templates) you would change it in polls/urls.py:
 path('specifics/<int:question_id>/', views.detail, name='detail'),
 ...
 
-5.4. Namespacing URL names and Why?
+3.4. Namespacing URL names and Why?
 - We namespace URL names(paths urlpatterns) incase we had the same function
 name in other app installed so the will not be confused on what function/URL
 to access.
@@ -203,3 +215,143 @@ to point at the namespaced detail view:
 After:
 <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
 
+
+## Part 3: Form processing and Cutting down our code
+Before:
+{% extends 'polls/base.html' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+<h1>{{ question.question_text }}</h1>
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+After:
+{% extends 'polls/base.html' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+    {% for choice in question.choice_set.all %}
+        <!-- for the radio button(checkbox) -->
+        <!-- for loop.counter counts the for loop iteration -->
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <!-- for the choice text -->
+        <label for="choice{{ forloop.counter }}">
+            {{ choice.choice_text }}
+        </label><br>
+    {% endfor %}
+</fieldset>
+<input type="submit" value="Vote">
+</form>
+{% endblock %}
+
+Analyzing our tags:
+a. <fieldset> -another way of grouping related elements
+b. <legend> -regularly used for highlighting the main ideas
+c. <strong> -text inside this should not be ignored
+d. <input> -for radio button
+e. <label> -for choice text
+f. {{forloop.counter}} -counts the for loop iteration. We used it here to number our choices
+
+-What is and Why we use is {{csrf_token}}/(Cross Site Request Forgery token)?
+---This token is required to post/get data back to the server. The csrf token expires when the
+authenticated user is logged out.
+
+--used to verify that the authenticated user is the person actually making the requests to
+the application.
+
+
+Making votes:
+-Edit the vote():
+from django.urls import reverse
+#--
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+-request.POST is a dictionary-like object that lets you access submitted
+data by key name. In this case, request.POST['choice'] returns the ID of the
+selected choice, as a string. request.POST values are always strings.
+
+-request.POST['choice'] will raise KeyError if choice wasn’t provided in
+POST data. The above code checks for KeyError and redisplays the question
+form with an error message if choice isn’t given.
+
+-HttpResponseRedirect takes a single argument: the URL to which the user will be
+redirectedHttp ResponseRedirect takes a single argument: the URL to which the user
+will be redirected. 
+
+-We are using the reverse() function in the HttpResponseRedirect constructor
+in this example. This function helps avoid having to hardcode a URL in
+the view function. It is given the name of the view that we want to pass
+control to and the variable portion of the URL pattern that points to that
+view. In this case, using the URLconf we set up in Tutorial 3, this reverse()
+call will return a string like: '/polls/3/results/'
+where the 3 is the value of question.id. This redirected URL will then
+call the 'results' view to display the final page.
+
+
+### HOW DOES THE CODE RUNS ###
+*URL/polls/
+- From the urlpatterns, the path call the index() and it renders the index.html.
+Inside the index.html, it prints at the screen all the question from the
+latest_question_list which is an o-bject from index(). In there, we declare
+its value as the 5 last questions. So in index.html, we are returning 5
+questions if we have 5 or more questions, else, how many it has. And if you
+press any of those, it will direct you to that question and its choices because
+each of them contains id. Id that directs to you to any of them.
+
+*URL/polls/{{question.id}}
+- After clicking a choice, that choice will connect to that urlpatterns
+again to find what your a tag is looking on there.
+--<a href="{% url 'polls:detail' question.id %}">
+- Your a tag connects you to 'polls:detail' and it's called by the 'url'.
+As we remember,'polls:detail' calls the detail() in views.py. We put the
+{{question.id}} as its argument. And now we can vote. Each choices are
+originated on that question.
+
+*URL/polls/{{question.id}}/vote
+- After hitting the vote, it connects us to vote() which is happen because of:
+--<form action="{% url 'polls:vote' question.id %}" method="post">
+- The vote button submits the data(response.POST) in vote() because we
+declare it at the form tag and now it calls the vote() and our args is
+the response.POST from the detail.html. That response.POST contains the
+id of our selected choice in detail.html. In the 1st line of the vote(),
+we declare that our function's object is the response.POST and if it is
+possible we get the id of the selected choice then save it in varible 
+selected_choice. Else, it returns key error because that id is not in the
+choices of that question. And if selected_choice is possible, it add 1
+to the votes of selected_choice. Next it reverses the redirect you to the
+results. But if your response.POST is empty or you don't pick any of them,
+it still connects you to the vote but you were stuck to it and there's a
+line saying: 'you didn't select a choice'. You were stuck there until you vote.
+
+*URL/polls/{{question.id}}/results
+-Simply shows you all the votes for every choice.
