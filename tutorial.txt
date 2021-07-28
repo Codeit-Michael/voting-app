@@ -217,6 +217,7 @@ After:
 
 
 ## Part 3: Form processing and Cutting down our code
+3.1. Edit the detail.html
 Before:
 {% extends 'polls/base.html' %}
 
@@ -258,7 +259,7 @@ After:
 </form>
 {% endblock %}
 
-Analyzing our tags:
+3.2. Analyzing our tags:
 a. <fieldset> -another way of grouping related elements
 b. <legend> -regularly used for highlighting the main ideas
 c. <strong> -text inside this should not be ignored
@@ -274,7 +275,7 @@ authenticated user is logged out.
 the application.
 
 
-Making votes:
+3.3. Making votes:
 -Edit the vote():
 from django.urls import reverse
 #--
@@ -318,7 +319,7 @@ where the 3 is the value of question.id. This redirected URL will then
 call the 'results' view to display the final page.
 
 
-### HOW DOES THE CODE RUNS ###
+3.4. ### HOW DOES THE CODE RUNS ###
 *URL/polls/
 - From the urlpatterns, the path call the index() and it renders the index.html.
 Inside the index.html, it prints at the screen all the question from the
@@ -355,3 +356,63 @@ line saying: 'you didn't select a choice'. You were stuck there until you vote.
 
 *URL/polls/{{question.id}}/results
 -Simply shows you all the votes for every choice.
+
+3.5. Generic views
+-Django has already a built-in views for basic functions like index(),
+detail() and result(). Before using them, you must fixed the URLs first:
+Before:
+urlpatterns = [
+    # ex: /polls/
+    path('', views.index, name='index'),
+    # ex: /polls/5/
+    path('<int:question_id>/', views.detail, name='detail'),
+    # ex: /polls/5/results/
+    path('<int:question_id>/results/', views.results, name='results'),
+    # ex: /polls/5/vote/
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+After:
+urlpatterns = [
+    path('', views.IndexView.as_view(), name='index'),
+    path('<int:pk>/', views.DetailView.as_view(), name='detail'),
+    path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+-Next, go to your views.py and import:
+from django.views import generic
+
+-Then change the ff. function to class:
+Before:
+def index(request):
+    latest_question_list = question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+
+def detail(request, question_id):
+    myquestion = get_object_or_404(question, pk=question_id)
+    return render(request, 'polls/detail.html', {'question': myquestion})
+
+def results(request, question_id):
+    myquestion = get_object_or_404(question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': myquestion})
+
+After:
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
+
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
