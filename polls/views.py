@@ -3,6 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from .models import question,choice
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 
 # Create your views here.
 class IndexView(generic.ListView):
@@ -13,11 +14,13 @@ class IndexView(generic.ListView):
         """Return the last five published questions."""
         return question.objects.order_by('-pub_date')[:5]
 
-
 class DetailView(generic.DetailView):
     model = question
     template_name = 'polls/detail.html'
 
+    def get_queryset(self):
+        """Excludes any questions that aren't published yet."""
+        return question.objects.filter(pub_date__lte=timezone.now())
 
 class ResultsView(generic.DetailView):
     model = question
@@ -41,3 +44,10 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(myquestion.id,)))
+
+def get_queryset(self):
+    """
+    Return the last five published questions (not including those set to be
+    published in the future).
+    """
+    return question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
