@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}base template{% endblock %}</title>
+	<title>{% block title %}base template{% endblock %}</title>
+	{% block head %}
+	{% endblock %}
 </head>
 
 <body>
-{% block content %}
-base template
-{% endblock %}
+	{% block content %}
+		base template
+	{% endblock %}
 </body>
 
 </html>
